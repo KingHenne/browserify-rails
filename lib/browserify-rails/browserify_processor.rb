@@ -118,7 +118,7 @@ module BrowserifyRails
       @dependencies ||= begin
         # We forcefully run browserify (avoiding browserifyinc) with the --list
         # option to get a list of files.
-        list = run_browserify(nil, "--list")
+        list = run_browserify(nil, "--list", false)
 
         list.lines.map(&:strip).select do |path|
           # Filter the temp file, where browserify caches the input stream
@@ -163,7 +163,8 @@ module BrowserifyRails
       # Browserifyinc uses a special cache file. We set up the path for it if
       # we're going to use browserifyinc.
       if uses_browserifyinc(force_browserifyinc)
-        cache_file_path = rails_path(tmp_path, "browserifyinc-cache.json")
+        suffix = logical_path ? "-#{logical_path}" : ''
+        cache_file_path = rails_path(tmp_path, "browserifyinc-cache#{suffix}.json")
         command_options << " --cachefile=#{Shellwords.escape(cache_file_path)}"
       end
 
